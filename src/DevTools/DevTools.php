@@ -14,7 +14,7 @@ use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 require 'Encode.php';
 
-//	Jul 15, 2017
+//	Aug 18, 2017
 class DevTools extends PluginBase implements CommandExecutor{
 	public function onLoad(){
 		$this->getServer()->getCommandMap()->register('devtools',new ExtractPluginCommand($this));
@@ -36,39 +36,8 @@ class DevTools extends PluginBase implements CommandExecutor{
 			case 'ms':
 			case 'makeserver':
 				return $this->makeServerCommand($sender,$command,$label,$args);
-			case 'checkperm':
-				return $this->permissionCheckCommand($sender,$command,$label,$args);
 			default:
 				return false;
-		}
-	}
-	private function permissionCheckCommand(CommandSender $sender,Command $command,$label,array $args){
-		$target=$sender;
-		if(!isset($args[0])) return false;
-		$node=strtolower($args[0]);
-		if(isset($args[1])){
-			if(($player=$this->getServer()->getPlayer($args[1])) instanceof Player) $target=$player;
-			else return false;
-		}
-		if($target!==$sender and !$sender->hasPermission('devtools.command.checkperm.other')){
-			$sender->sendMessage(TextFormat::RED.'You do not have permissions to check other players.');
-			return true;
-		}else{
-			$sender->sendMessage(TextFormat::GREEN.'---- '.TextFormat::WHITE.'Permission node '.$node.TextFormat::GREEN.' ----');
-			$perm=$this->getServer()->getPluginManager()->getPermission($node);
-			if($perm instanceof Permission){
-				$desc=TextFormat::GOLD.'Description: '.TextFormat::WHITE.$perm->getDescription()."\n";
-				$desc.=TextFormat::GOLD.'Default: '.TextFormat::WHITE.$perm->getDefault()."\n";
-				$children='';
-				foreach($perm->getChildren() as $name=>$true) $children.=$name.',';
-				$desc.=TextFormat::GOLD.'Children: '.TextFormat::WHITE.substr($children,0,-2)."\n";
-			}else{
-				$desc=TextFormat::RED."Permission does not exist\n";
-				$desc.=TextFormat::GOLD.'Default: '.TextFormat::WHITE.Permission::$DEFAULT_PERMISSION."\n";
-			}
-			$sender->sendMessage($desc);
-			$sender->sendMessage(TextFormat::YELLOW.$target->getName().TextFormat::WHITE.' has it set to '.($target->hasPermission($node)===true?TextFormat::GREEN.'true':TextFormat::RED.'false'));
-			return true;
 		}
 	}
 	private function makePluginLoader(CommandSender $sender,Command $command,$label,array $args){
@@ -163,7 +132,8 @@ class DevTools extends PluginBase implements CommandExecutor{
 			'minecraft'=>$server->getVersion(),
 			'creationDate'=>time()
 		];
-		$metadata["protocol"]=\pocketmine\network\protocol\Info::CURRENT_PROTOCOL;
+		$metadata["protocol"]=\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL;
+		// $metadata["protocol"]=\pocketmine\network\protocol\Info::CURRENT_PROTOCOL;
 		$phar->setMetadata($metadata);
 		$phar->setStub('<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();');
 		$phar->setSignatureAlgorithm(\Phar::SHA1);
