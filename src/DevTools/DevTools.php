@@ -14,7 +14,6 @@ use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 require 'Encode.php';
 
-//	Aug 18, 2017
 class DevTools extends PluginBase implements CommandExecutor{
 	public function onLoad(){
 		$this->getServer()->getCommandMap()->register('devtools',new ExtractPluginCommand($this));
@@ -132,8 +131,8 @@ class DevTools extends PluginBase implements CommandExecutor{
 			'minecraft'=>$server->getVersion(),
 			'creationDate'=>time()
 		];
-		$metadata["protocol"]=\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL;
-		// $metadata["protocol"]=\pocketmine\network\protocol\Info::CURRENT_PROTOCOL;
+		if(interface_exists('\pocketmine\network\mcpe\protocol\ProtocolInfo',false)) $metadata["protocol"]=\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL;
+		else $metadata["protocol"]=\pocketmine\network\protocol\Info::CURRENT_PROTOCOL;
 		$phar->setMetadata($metadata);
 		$phar->setStub('<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();');
 		$phar->setSignatureAlgorithm(\Phar::SHA1);

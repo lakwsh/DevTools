@@ -26,7 +26,7 @@
 			exit(1);
 		}else{$relativePath=$makePaths[0];}
 	}else{$relativePath=rtrim(str_replace("\\",'/',realpath($opts['relative'])),'/').'/';}
-	$pharName=$opts['out']??'output.phar';
+	$pharName=$opts['out']??'DevTools-lakwsh_v'.date('Y-m-d').'.phar';
 	$stubPath=$opts['stub']??'stub.php';
 	if(!is_dir($relativePath)){
 		echo $relativePath." is not a folder\n";
