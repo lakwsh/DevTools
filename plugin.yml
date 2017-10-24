@@ -1,6 +1,6 @@
 name: DevTools-lakwsh
 main: DevTools\DevTools
-version: 2017-10-01
+version: 2017-10-25
 load: STARTUP
 author: lakwsh
 description: Helps develop and distribute PocketMine-MP plugins
