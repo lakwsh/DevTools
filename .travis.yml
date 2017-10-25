@@ -4,4 +4,4 @@ language: php
 php:
  - 7.2
 
-script: ./run.sh
+script: php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
