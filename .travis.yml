@@ -2,14 +2,14 @@ sudo: false
 
 language: php
 php:
- - 7.2
+ - 7.0
 
 script: php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
 
 deploy:
   - provider: releases
     api_key:
-      secure: 50861d78786db85f59cc7b7ac567ff2f3c8b8adf
+      secure: fd34bfe2c74818a4ede923e922d3408e614fdd11
     file: *.phar
     skip_cleanup: true
     on:
