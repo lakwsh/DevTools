@@ -7,10 +7,10 @@ php:
 script: php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
 
 deploy:
-  - provider: releases
-    api_key:
-      secure: fd34bfe2c74818a4ede923e922d3408e614fdd11
-    file: *.phar
-    skip_cleanup: true
-    on:
-      tags: true
+  provider: releases
+  api_key:
+    secure: "d7cb5799ad3e702e80e4cf27344d465af29b22f7"
+  file: ./*.phar
+  skip_cleanup: true
+  on:
+    tags: true
