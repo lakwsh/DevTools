@@ -5,12 +5,3 @@ php:
  - 7.0
 
 script: php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
-
-deploy:
-  provider: releases
-  api_key:
-    secure: 0901912dbcfc05a21e74f937c3396303eac34fc6
-  file: ./*.phar
-  skip_cleanup: true
-  on:
-    tags: false
