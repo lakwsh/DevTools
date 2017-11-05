@@ -1,5 +1,5 @@
 <?php
-	const VERSION='1.12.5';
+	const VERSION='1.12.6';
     date_default_timezone_set('Asia/Hong_Kong');
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
 	if(!isset($opts['make'])){
