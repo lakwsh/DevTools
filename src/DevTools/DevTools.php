@@ -27,7 +27,8 @@ class DevTools extends PluginBase implements CommandExecutor{
 		switch($command->getName()){
 			case 'mp':
 			case 'makeplugin':
-				if(isset($args[0]) and $args[0]==='FolderPluginLoader') return $this->makePluginLoader($sender,$command,$label,$args);
+				if(!isset($args[0]))return false;
+				if($args[0]==='FolderPluginLoader') return $this->makePluginLoader($sender,$command,$label,$args);
 				else return $this->makePluginCommand($sender,$command,$label,$args);
 			case 'ms':
 			case 'makeserver':
@@ -66,9 +67,6 @@ class DevTools extends PluginBase implements CommandExecutor{
 		return true;
 	}
 	private function makePluginCommand(CommandSender $sender,Command $command,$label,array $args){
-		if(!isset($args[0])){
-			$sender->sendMessage(TextFormat::RED.'Empty plugin name. Please write the plugin name.');
-		}
 		$pluginName=trim($args[0]);
 		if($pluginName==='' or !(($plugin=Server::getInstance()->getPluginManager()->getPlugin($pluginName)) instanceof Plugin)){
 			$sender->sendMessage(TextFormat::RED.'Invalid plugin name,check the name case.');
