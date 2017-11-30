@@ -66,6 +66,9 @@ class DevTools extends PluginBase implements CommandExecutor{
 		return true;
 	}
 	private function makePluginCommand(CommandSender $sender,Command $command,$label,array $args){
+		if(!isset($args[0])){
+			$sender->sendMessage(TextFormat::RED.'Empty plugin name. Please write the plugin name.');
+		}
 		$pluginName=trim($args[0]);
 		if($pluginName==='' or !(($plugin=Server::getInstance()->getPluginManager()->getPlugin($pluginName)) instanceof Plugin)){
 			$sender->sendMessage(TextFormat::RED.'Invalid plugin name,check the name case.');
