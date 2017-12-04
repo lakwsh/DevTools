@@ -79,8 +79,8 @@
     $excludedSubstrings=['/.',$pharName];
     $regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
     foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($basePath)) as $file){
-    	if(substr($file,-4)!=='.php' or !is_writable($file)) continue;
-    	file_put_contents($file,php_strip_whitespace($file));
+    	if(substr($file,-4)!=='.php') continue;
+	    shell_exec('php -l "'.$file.'"');
     }
     $count=count($phar->buildFromDirectory($basePath,$regex));
     echo 'Added '.$count.' files'.PHP_EOL;
