@@ -1,5 +1,5 @@
 <?php
-	const VERSION='1.12.6';
+	const VERSION='1.12.7';
     date_default_timezone_set('Asia/Hong_Kong');
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
 	if(!isset($opts['make'])){
@@ -46,12 +46,15 @@
 		echo 'Using stub '.$basePath.$stubPath.PHP_EOL;
 		$phar->setStub('<?php require("phar://".__FILE__."/'.$stubPath.'"); __HALT_COMPILER();');
 	}elseif(isset($opts['entry'])){
-		$entry=addslashes(str_replace("\\",'/',$opts["entry"]));
+		$realEntry=realpath($opts['entry']);
+		if($realEntry===false) exit('Entry point not found');
+    	$entry=addslashes(str_replace("\\",'/',$realEntry));
+    	$entry=str_replace($basePath,'',$entry);
 		echo "Setting entry point to ".$entry.PHP_EOL;
 		$phar->setStub('<?php require("phar://".__FILE__."/'.$entry.'"); __HALT_COMPILER();');
 	}else{
-		if(file_exists($relativePath.'plugin.yml')){
-			$metadata=yaml_parse_file($relativePath.'plugin.yml');
+		if(file_exists($basePath.'plugin.yml')){
+			$metadata=yaml_parse_file($basePath.'plugin.yml');
 		}else{
 			echo "Missing entry point or plugin.yml\n";
 			exit(1);

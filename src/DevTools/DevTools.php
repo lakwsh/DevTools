@@ -28,8 +28,25 @@ class DevTools extends PluginBase implements CommandExecutor{
 			case 'mp':
 			case 'makeplugin':
 				if(!isset($args[0]))return false;
-				if($args[0]==='FolderPluginLoader') return $this->makePluginLoader($sender,$command,$label,$args);
-				else return $this->makePluginCommand($sender,$command,$label,$args);
+				if($args[0]==='FolderPluginLoader'){
+					return $this->makePluginLoader($sender,$command,$label,$args);
+				}elseif($args[0]==="*"){
+					$plugins = $this->getServer()->getPluginManager()->getPlugins();
+					$succeeded=$failed=array();
+					$skipped=0;
+					foreach($plugins as $plugin){
+						if(!$plugin->getPluginLoader() instanceof FolderPluginLoader){
+							$skipped++;
+							continue;
+						}
+						if($this->makePluginCommand($sender,$command,$label,[$plugin->getName()])) $succeeded[]=$plugin->getName();else $failed[]=$plugin->getName();
+					}
+					if(count($failed)>0) $sender->sendMessage(TextFormat::RED.count($failed).' plugin(s) failed to build: '.implode(',',$failed));
+					if(count($succeeded)>0) $sender->sendMessage(TextFormat::GREEN.count($succeeded).'/'.(count($plugins)-$skipped).' plugin(s) successfully built: '.implode(', ',$succeeded));
+					return true;
+				}else{
+					return $this->makePluginCommand($sender,$command,$label,$args);
+				}
 			case 'ms':
 			case 'makeserver':
 				return $this->makeServerCommand($sender,$command,$label,$args);
@@ -70,12 +87,12 @@ class DevTools extends PluginBase implements CommandExecutor{
 		$pluginName=trim($args[0]);
 		if($pluginName==='' or !(($plugin=Server::getInstance()->getPluginManager()->getPlugin($pluginName)) instanceof Plugin)){
 			$sender->sendMessage(TextFormat::RED.'Invalid plugin name,check the name case.');
-			return true;
+			return false;
 		}
 		$description=$plugin->getDescription();
 		if(!($plugin->getPluginLoader() instanceof FolderPluginLoader)){
 			$sender->sendMessage(TextFormat::RED.'Plugin '.$description->getName().' is not in folder structure.');
-			return true;
+			return false;
 		}
 		$pharPath=$this->getDataFolder(). DIRECTORY_SEPARATOR .$description->getName().'_v'.$description->getVersion().'.phar';
 		$metadata=array(
