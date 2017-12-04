@@ -80,7 +80,7 @@
     $regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
     foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($basePath)) as $file){
     	if(substr($file,-4)!=='.php') continue;
-	    shell_exec('php -l "'.$file.'"');
+	    if(shell_exec('php -l "'.$file.'"')!==null) exit(1);
     }
     $count=count($phar->buildFromDirectory($basePath,$regex));
     echo 'Added '.$count.' files'.PHP_EOL;
