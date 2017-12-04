@@ -70,7 +70,7 @@
 			'website'=>($metadata['website']??''),
 			'creationDate'=>time()
 		]);
-		$phar->setStub('<?php echo "PocketMine-MP plugin '.$metadata['name'].' v'.$metadata['version'].'\nThis file has been generated using DevTools-lakwsh v'.$version.' at '.date('r').'\n----------------\n";if(extension_loaded("phar")){$phar=new \Phar(__FILE__);foreach($phar->getMetadata() as $key=>$value){echo ucfirst($key).": ".(is_array($value)?implode(",",$value):$value)."\n";}} __HALT_COMPILER();');
+		$phar->setStub('<?php echo "PocketMine-MP plugin '.$metadata['name'].' v'.$metadata['version'].'\nThis file has been generated using DevTools-lakwsh v'.VERSION.' at '.date('r').'\n----------------\n";if(extension_loaded("phar")){$phar=new \Phar(__FILE__);foreach($phar->getMetadata() as $key=>$value){echo ucfirst($key).": ".(is_array($value)?implode(",",$value):$value)."\n";}} __HALT_COMPILER();');
 	}
 	$phar->setSignatureAlgorithm(\Phar::SHA1);
 	$phar->startBuffering();
