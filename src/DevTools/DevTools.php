@@ -111,11 +111,11 @@ class DevTools extends PluginBase implements CommandExecutor{
 		$file=$reflection->getProperty('file');
 		$file->setAccessible(true);
 		$filePath=rtrim(str_replace("\\",'/',$file->getValue($plugin)),'/').'/';
-        foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
-            $path=ltrim(str_replace(["\\",$filePath],['/',''],$file),'/');
-            if($path{0}==='.' or strpos($path,'/.')!==false) continue;
-            if(EncodePHP($file)) $sender->sendMessage('[DevTools-lakwsh] Encoding '.$path);
-        }
+		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
+			$path=ltrim(str_replace(["\\",$filePath],['/',''],$file),'/');
+			if(substr($file,-4)!=='.php') continue;
+			if(EncodePHP($file)) $sender->sendMessage('[DevTools-lakwsh] Encoding '.$path);
+		}
         self::buildPhar($sender,$pharPath,$filePath,[],$metadata,$stub);
 		return true;
 	}

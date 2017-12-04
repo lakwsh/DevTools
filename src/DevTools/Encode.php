@@ -1,6 +1,6 @@
 <?php
 	function EncodePHP($file){
-		if(substr($file,-4)!='.php') return false;
+		if(!is_writable($file)) return false;
 		//删除换行等
 		$c=php_strip_whitespace($file);
 		//移除php标记
