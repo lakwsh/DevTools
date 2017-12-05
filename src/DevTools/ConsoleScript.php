@@ -77,7 +77,10 @@
 		if($status!==0) $flag=true;
 	}
 	if($flag){
-		echo(implode(PHP_EOL,$output));
+		foreach($output as $error){
+			if(stripos($error,'No syntax errors detected')!==false) continue;
+			echo $error;
+		}
 		exit(1);
 	}
 	echo 'Adding files...'.PHP_EOL;
