@@ -68,15 +68,18 @@
 	}
 	$phar->setSignatureAlgorithm(\Phar::SHA1);
 	$phar->startBuffering();
-	echo 'Starting syntax check'.PHP_EOL;
+	echo 'Checking files...'.PHP_EOL;
 	$flag=false;
+	$output=array();
 	foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($basePath)) as $file){
 		if(substr($file,-4)!=='.php') continue;
-		system('php -l "'.$file.'"',$return);
-		if($return!==0) $flag=true;
+		exec('php -l "'.$file.'"',$output,$status);
+		if($status!==0) $flag=true;
 	}
-	if($flag) exit(1);
-	else echo 'Syntax check done.'.PHP_EOL;
+	if($flag){
+		echo(implode(PHP_EOL,$output));
+		exit(1);
+	}
 	echo 'Adding files...'.PHP_EOL;
 	$excludedSubstrings=['/.',$pharName];
 	$regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
