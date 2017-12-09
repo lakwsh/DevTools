@@ -187,14 +187,6 @@ commands:
   description: Creates a Phar plugin from one in source code form
   usage: "/makeplugin <pluginName>"
   permission: devtools.op
- ms:
-  description: Creates a PocketMine-MP Phar
-  usage: "/ms"
-  permission: devtools.op
- mp:
-  description: Creates a Phar plugin from one in source code form
-  usage: "/mp <pluginName>"
-  permission: devtools.op
 
 permissions:
  devtools:
