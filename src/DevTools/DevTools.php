@@ -93,27 +93,19 @@ class DevTools extends PluginBase implements CommandExecutor{
 			$sender->sendMessage(TextFormat::RED.'Plugin '.$description->getName().' is not in folder structure.');
 			return false;
 		}
-		$pharPath=$this->getDataFolder(). DIRECTORY_SEPARATOR .$description->getName().'_v'.$description->getVersion().'.phar';
-		$metadata=array(
-			'name'=>$description->getName(),
-			'version'=>$description->getVersion(),
-			'main'=>$description->getMain(),
-			'api'=>$description->getCompatibleApis(),
-			'depend'=>$description->getDepend(),
-			'description'=>$description->getDescription(),
-			'authors'=>$description->getAuthors(),
-			'website'=>$description->getWebsite(),
-			'creationDate'=>time()
-        );
-        $stub='<?php echo "PocketMine-MP plugin '.$description->getName().' v'.$description->getVersion().'\nThis file has been generated using DevTools-lakwsh v'.$this->getDescription()->getVersion().' at '.date('r').'\n----------------\n";if(extension_loaded("phar")){$phar=new \Phar(__FILE__);foreach($phar->getMetadata() as $key=>$value){echo ucfirst($key).": ".(is_array($value)?implode(",",$value):$value)."\n";}} __HALT_COMPILER();';
+		$pharPath=$this->getDataFolder().DIRECTORY_SEPARATOR.$description->getName().'_v'.$description->getVersion().'.phar';
+		$metadata=array('name'=>$description->getName(),'version'=>$description->getVersion(),'main'=>$description->getMain(),'api'=>$description->getCompatibleApis(),'depend'=>$description->getDepend(),'description'=>$description->getDescription(),'authors'=>$description->getAuthors(),'website'=>$description->getWebsite(),'creationDate'=>time());
+		$stub='<?php echo "PocketMine-MP plugin '.$description->getName().' v'.$description->getVersion().'\nThis file has been generated using DevTools-lakwsh v'.$this->getDescription()->getVersion().' at '.date('r').'\n----------------\n";if(extension_loaded("phar")){$phar=new \Phar(__FILE__);foreach($phar->getMetadata() as $key=>$value){echo ucfirst($key).": ".(is_array($value)?implode(",",$value):$value)."\n";}} __HALT_COMPILER();';
 		$reflection=new \ReflectionClass("pocketmine\\plugin\\PluginBase");
 		$file=$reflection->getProperty('file');
 		$file->setAccessible(true);
 		$filePath=rtrim(str_replace("\\",'/',$file->getValue($plugin)),'/').'/';
-		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
-			$path=ltrim(str_replace(["\\",$filePath],['/',''],$file),'/');
-			if(substr($file,-4)!=='.php') continue;
-			if(EncodePHP($file)) $sender->sendMessage('[DevTools-lakwsh] Encoding '.$path);
+		if(isset($args[1])){
+			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
+				$path=ltrim(str_replace(["\\",$filePath],['/',''],$file),'/');
+				if(substr($file,-4)!=='.php') continue;
+				if(EncodePHP($file)) $sender->sendMessage('[DevTools-lakwsh] Encoding '.$path);
+			}
 		}
         self::buildPhar($sender,$pharPath,$filePath,[],$metadata,$stub);
 		return true;

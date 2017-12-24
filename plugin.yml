@@ -1,6 +1,6 @@
 name: DevTools-lakwsh
 main: DevTools\DevTools
-version: 2017-12-11
+version: 2017-12-25
 load: STARTUP
 author: lakwsh
 description: Helps develop and distribute PocketMine-MP plugins
@@ -25,6 +25,8 @@ api:
  - 1.0.0-ALPHA8
  - 1.0.0-alpha9
  - 1.0.0-ALPHA9
+ - 1.0.0-alpha10
+ - 1.0.0-ALPHA10
  - 2.0.0
  - 2.0.0-alpha1
  - 2.0.0-ALPHA1
@@ -44,6 +46,8 @@ api:
  - 2.0.0-ALPHA8
  - 2.0.0-alpha9
  - 2.0.0-ALPHA9
+ - 2.0.0-alpha10
+ - 2.0.0-ALPHA10
  - 3.0.0
  - 3.0.0-alpha1
  - 3.0.0-ALPHA1
@@ -63,6 +67,8 @@ api:
  - 3.0.0-ALPHA8
  - 3.0.0-alpha9
  - 3.0.0-ALPHA9
+ - 3.0.0-alpha10
+ - 3.0.0-ALPHA10
  - 4.0.0
  - 4.0.0-alpha1
  - 4.0.0-ALPHA1
@@ -82,6 +88,8 @@ api:
  - 4.0.0-ALPHA8
  - 4.0.0-alpha9
  - 4.0.0-ALPHA9
+ - 4.0.0-alpha10
+ - 4.0.0-ALPHA10
  - 5.0.0
  - 5.0.0-alpha1
  - 5.0.0-ALPHA1
@@ -101,6 +109,8 @@ api:
  - 5.0.0-ALPHA8
  - 5.0.0-alpha9
  - 5.0.0-ALPHA9
+ - 5.0.0-alpha10
+ - 5.0.0-ALPHA10
  - 6.0.0
  - 6.0.0-alpha1
  - 6.0.0-ALPHA1
@@ -120,6 +130,8 @@ api:
  - 6.0.0-ALPHA8
  - 6.0.0-alpha9
  - 6.0.0-ALPHA9
+ - 6.0.0-alpha10
+ - 6.0.0-ALPHA10
  - 7.0.0
  - 7.0.0-alpha1
  - 7.0.0-ALPHA1
@@ -139,6 +151,8 @@ api:
  - 7.0.0-ALPHA8
  - 7.0.0-alpha9
  - 7.0.0-ALPHA9
+ - 7.0.0-alpha10
+ - 7.0.0-ALPHA10
  - 8.0.0
  - 8.0.0-alpha1
  - 8.0.0-ALPHA1
@@ -158,6 +172,8 @@ api:
  - 8.0.0-ALPHA8
  - 8.0.0-alpha9
  - 8.0.0-ALPHA9
+ - 8.0.0-alpha10
+ - 8.0.0-ALPHA10
  - 9.0.0
  - 9.0.0-alpha1
  - 9.0.0-ALPHA1
@@ -177,6 +193,8 @@ api:
  - 9.0.0-ALPHA8
  - 9.0.0-alpha9
  - 9.0.0-ALPHA9
+ - 9.0.0-alpha10
+ - 9.0.0-ALPHA10
 
 commands:
  makeserver:
