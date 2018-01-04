@@ -5,7 +5,7 @@ php:
 script:
   - php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
 before_deploy:
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - git tag "$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key: $token
