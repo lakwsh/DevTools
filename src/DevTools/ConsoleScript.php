@@ -44,6 +44,7 @@
 		@unlink($pharName);
 	}
 	echo 'Creating '.$pharName.'...'.PHP_EOL;
+	if(file_exists($unlink=$basePath.'ConsoleScript.php')) @unlink($unlink);
 	$phar=new \Phar($pharName);
 	$start=microtime(true);
 	if(file_exists($basePath.$stubPath)){
@@ -72,7 +73,7 @@
 	$flag=false;
 	$output=array();
 	foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($basePath)) as $file){
-		if(substr($file,-4)!=='.php' or $file==$basePath.'ConsoleScript.php') continue;
+		if(substr($file,-4)!=='.php') continue;
 		exec('php -l "'.$file.'"',$output,$status);
 		if($status!==0) $flag=true;
 	}
