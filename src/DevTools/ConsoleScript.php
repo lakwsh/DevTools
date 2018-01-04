@@ -32,7 +32,7 @@
 		$basePath=rtrim(str_replace("\\",'/',realpath($opts['relative'])),'/').'/';
 	}
 	$includedPaths=array_filter(array_map(function(string $path) use ($basePath):string{return str_replace($basePath,'',$path);},$includedPaths),function(string $v):bool{return $v!=='';});
-	$pharName=$opts['out']??'output.phar';
+	$pharName=$opts['out']??'Output_'.time().'.phar';
 	$stubPath=$opts['stub']??'stub.php';
 	if(!is_dir($basePath)){
 		echo $basePath.' is not a folder'.PHP_EOL;
@@ -72,7 +72,7 @@
 	$flag=false;
 	$output=array();
 	foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($basePath)) as $file){
-		if(substr($file,-4)!=='.php') continue;
+		if(substr($file,-4)!=='.php' or $file==$basePath.'ConsoleScript.php') continue;
 		exec('php -l "'.$file.'"',$output,$status);
 		if($status!==0) $flag=true;
 	}
