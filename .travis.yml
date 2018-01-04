@@ -1,7 +1,17 @@
 sudo: false
-
 language: php
 php:
- - 7.0
-
-script: php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
+  - 7.0
+script:
+  - php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
+before_deploy:
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+deploy:
+  provider: releases
+  api_key: $token
+  skip_cleanup: true
+  file_glob: true
+  file: "*.phar"
+  on:
+    tags: false
+    all_branches: true

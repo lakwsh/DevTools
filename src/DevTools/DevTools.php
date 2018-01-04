@@ -38,7 +38,8 @@ class DevTools extends PluginBase implements CommandExecutor{
 							$skipped++;
 							continue;
 						}
-						if($this->makePluginCommand($sender,$command,$label,[$plugin->getName()])) $succeeded[]=$plugin->getName();
+						$args[0]=$plugin->getName();
+						if($this->makePluginCommand($sender,$command,$label,$args)) $succeeded[]=$plugin->getName();
 						else $failed[]=$plugin->getName();
 					}
 					if(count($failed)>0) $sender->sendMessage(TextFormat::RED.count($failed).' plugin(s) failed to build: '.implode(',',$failed));

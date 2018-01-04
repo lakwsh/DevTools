@@ -32,7 +32,7 @@
 		$basePath=rtrim(str_replace("\\",'/',realpath($opts['relative'])),'/').'/';
 	}
 	$includedPaths=array_filter(array_map(function(string $path) use ($basePath):string{return str_replace($basePath,'',$path);},$includedPaths),function(string $v):bool{return $v!=='';});
-	$pharName=$opts['out']??'DevTools-lakwsh_v'.date('Y-m-d').'.phar';
+	$pharName=$opts['out']??'output.phar';
 	$stubPath=$opts['stub']??'stub.php';
 	if(!is_dir($basePath)){
 		echo $basePath.' is not a folder'.PHP_EOL;
