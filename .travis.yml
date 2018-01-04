@@ -12,6 +12,3 @@ deploy:
   skip_cleanup: true
   file_glob: true
   file: "*.phar"
-  on:
-    tags: false
-    all_branches: true
