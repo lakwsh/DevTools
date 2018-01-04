@@ -4,4 +4,13 @@ language: php
 php:
  - 7.0
 
+before_deploy:
+ - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+deploy:
+ provider: releases
+ api_key:
+  secure: 955e3e82df4075d66ee5463d56cca2af23a257ab
+ file: *.phar
+ skip_cleanup: true
+
 script: php -dphar.readonly=0 ./src/DevTools/ConsoleScript.php --make ./
