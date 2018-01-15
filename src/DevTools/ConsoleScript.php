@@ -4,7 +4,7 @@
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
 	if(!isset($opts['make'])){
 		echo '== PocketMine-MP DevTools-lakwsh CLI interface =='.PHP_EOL.PHP_EOL;
-		echo 'Usage: '.PHP_BINARY.' -dphar.readonly=0 '.$argv[0].' --make <sourceFolder1[,sourceFolder2[,sourceFolder3...]]> --relative <relativePath> --entry "relativeSourcePath.php" --out <pharName.phar>'.PHP_EOL;
+		echo 'Usage: '.PHP_BINARY.' -dphar.readonly=0 '.$argv[0].' --make [sourceFolder1{,sourceFolder2{,sourceFolder3...}}] --relative [relativePath] --entry "relativeSourcePath.php" --out [pharName.phar]'.PHP_EOL;
 		exit(0);
 	}
 	if(ini_get('phar.readonly')==1){
@@ -12,7 +12,7 @@
 		exit(1);
 	}
 	$includedPaths=explode(',',$opts['make']);
-	array_walk($includedPaths,function(&$path,$key){
+	array_walk($includedPaths,function(&$path){
 		$realPath=realpath($path);
 		if($realPath===false){
 			echo "[ERROR] make directory `$path` does not exist or permission denied".PHP_EOL;
@@ -23,7 +23,7 @@
 	$basePath='';
 	if(!isset($opts['relative'])){
 		if(count($includedPaths)>1){
-			echo 'You must specify a relative path with --relative <path> to be able to include multiple directories'.PHP_EOL;
+			echo 'You must specify a relative path with --relative [path] to be able to include multiple directories'.PHP_EOL;
 			exit(1);
 		}else{
 			$basePath=rtrim(str_replace("\\",'/',realpath(array_shift($includedPaths))),'/').'/';

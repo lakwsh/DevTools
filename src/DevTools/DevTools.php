@@ -3,7 +3,6 @@ namespace DevTools;
 use DevTools\commands\ExtractPluginCommand;
 use FolderPluginLoader\FolderPluginLoader;
 use pocketmine\command\Command;
-use pocketmine\command\CommandExecutor;
 use pocketmine\command\CommandSender;
 use pocketmine\plugin\Plugin;
 use pocketmine\plugin\PluginBase;
@@ -28,7 +27,7 @@ class DevTools extends PluginBase{
 			case 'makeplugin':
 				if(!isset($args[0]))return false;
 				if($args[0]=='FolderPluginLoader'){
-					return $this->makePluginLoader($sender,$args);
+					return $this->makePluginLoader($sender);
 				}elseif($args[0]=='*'){
 					$plugins=$this->getServer()->getPluginManager()->getPlugins();
 					$succeeded=$failed=array();
@@ -49,12 +48,12 @@ class DevTools extends PluginBase{
 					return $this->makePluginCommand($sender,$args);
 				}
 			case 'makeserver':
-				return $this->makeServerCommand($sender,$args);
+				return $this->makeServerCommand($sender);
 			default:
 				return false;
 		}
 	}
-	private function makePluginLoader(CommandSender $sender,array $args){
+	private function makePluginLoader(CommandSender $sender){
 		$pharPath=$this->getDataFolder(). DIRECTORY_SEPARATOR .'FolderPluginLoader.phar';
 		if(file_exists($pharPath)){
 			$sender->sendMessage('Phar plugin already exists,overwriting...');
@@ -111,7 +110,7 @@ class DevTools extends PluginBase{
         self::buildPhar($sender,$pharPath,$filePath,[],$metadata,$stub);
 		return true;
 	}
-	private function makeServerCommand(CommandSender $sender,array $args){
+	private function makeServerCommand(CommandSender $sender){
         if(stripos(\pocketmine\PATH,"phar://")===0){
             $sender->sendMessage(TextFormat::RED.'This command can only be used on a server running from source code');
             return true;
@@ -123,10 +122,9 @@ class DevTools extends PluginBase{
 			'version'=>$server->getPocketMineVersion(),
 			'api'=>$server->getApiVersion(),
 			'minecraft'=>$server->getVersion(),
-			'creationDate'=>time()
+			'creationDate'=>time(),
+			'protocol'=>\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL
 		];
-		if(interface_exists('\pocketmine\network\mcpe\protocol\ProtocolInfo',false)) $metadata["protocol"]=\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL;
-		else $metadata["protocol"]=\pocketmine\network\protocol\Info::CURRENT_PROTOCOL;
 		$stub='<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();';
         $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).'/'),'/').'/';
         $this->buildPhar($sender,$pharPath,$filePath,['src','vendor'],$metadata,$stub);
