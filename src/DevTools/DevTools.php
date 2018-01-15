@@ -12,7 +12,7 @@ use pocketmine\Server;
 use pocketmine\utils\TextFormat;
 require 'Encode.php';
 
-class DevTools extends PluginBase implements CommandExecutor{
+class DevTools extends PluginBase{
 	public function onLoad(){
 		$this->getServer()->getCommandMap()->register('devtools',new ExtractPluginCommand($this));
 	}
@@ -28,7 +28,7 @@ class DevTools extends PluginBase implements CommandExecutor{
 			case 'makeplugin':
 				if(!isset($args[0]))return false;
 				if($args[0]=='FolderPluginLoader'){
-					return $this->makePluginLoader($sender,$command,$label,$args);
+					return $this->makePluginLoader($sender,$args);
 				}elseif($args[0]=='*'){
 					$plugins=$this->getServer()->getPluginManager()->getPlugins();
 					$succeeded=$failed=array();
@@ -39,22 +39,22 @@ class DevTools extends PluginBase implements CommandExecutor{
 							continue;
 						}
 						$args[0]=$plugin->getName();
-						if($this->makePluginCommand($sender,$command,$label,$args)) $succeeded[]=$plugin->getName();
+						if($this->makePluginCommand($sender,$args)) $succeeded[]=$plugin->getName();
 						else $failed[]=$plugin->getName();
 					}
 					if(count($failed)>0) $sender->sendMessage(TextFormat::RED.count($failed).' plugin(s) failed to build: '.implode(',',$failed));
 					if(count($succeeded)>0) $sender->sendMessage(TextFormat::GREEN.count($succeeded).'/'.(count($plugins)-$skipped).' plugin(s) successfully built: '.implode(', ',$succeeded));
 					return true;
 				}else{
-					return $this->makePluginCommand($sender,$command,$label,$args);
+					return $this->makePluginCommand($sender,$args);
 				}
 			case 'makeserver':
-				return $this->makeServerCommand($sender,$command,$label,$args);
+				return $this->makeServerCommand($sender,$args);
 			default:
 				return false;
 		}
 	}
-	private function makePluginLoader(CommandSender $sender,Command $command,$label,array $args){
+	private function makePluginLoader(CommandSender $sender,array $args){
 		$pharPath=$this->getDataFolder(). DIRECTORY_SEPARATOR .'FolderPluginLoader.phar';
 		if(file_exists($pharPath)){
 			$sender->sendMessage('Phar plugin already exists,overwriting...');
@@ -83,7 +83,7 @@ class DevTools extends PluginBase implements CommandExecutor{
 		$sender->sendMessage('Folder plugin loader has been created on '.$pharPath);
 		return true;
 	}
-	private function makePluginCommand(CommandSender $sender,Command $command,$label,array $args){
+	private function makePluginCommand(CommandSender $sender,array $args){
 		$pluginName=trim($args[0]);
 		if($pluginName==='' or !(($plugin=Server::getInstance()->getPluginManager()->getPlugin($pluginName)) instanceof Plugin)){
 			$sender->sendMessage(TextFormat::RED.'Invalid plugin name,check the name case.');
@@ -111,7 +111,7 @@ class DevTools extends PluginBase implements CommandExecutor{
         self::buildPhar($sender,$pharPath,$filePath,[],$metadata,$stub);
 		return true;
 	}
-	private function makeServerCommand(CommandSender $sender,Command $command,$label,array $args){
+	private function makeServerCommand(CommandSender $sender,array $args){
         if(stripos(\pocketmine\PATH,"phar://")===0){
             $sender->sendMessage(TextFormat::RED.'This command can only be used on a server running from source code');
             return true;
