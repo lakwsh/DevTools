@@ -3,6 +3,9 @@
 插件打包指令: `makeplugin *`<br>
 服务器打包指令: `makeserver`<br>
 
+## 成品下载
+<a href="https://github.com/lakwsh/DevTools-lakwsh/releases">点击转跳</a><br>
+
 ## 注意
 插件打包指令: `makeplugin <plugin name>`<br>
 执行过程中默认不会对源代码进行混淆工作<br>
