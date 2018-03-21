@@ -88,7 +88,9 @@
 	echo 'Adding files...'.PHP_EOL;
 	$excludedSubstrings=['/.',$pharName];
 	$regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
-	$count=count($phar->buildFromDirectory($basePath,$regex));
+	$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::CURRENT_AS_PATHNAME);
+	$regexIterator=new \RegexIterator(new \RecursiveIteratorIterator($directory),$regex);
+	$count=count($phar->buildFromIterator($regexIterator, $basePath));
 	echo 'Added '.$count.' files'.PHP_EOL;
 	$phar->compressFiles(\Phar::GZ);
 	$phar->stopBuffering();

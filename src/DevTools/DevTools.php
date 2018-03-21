@@ -147,8 +147,10 @@ class DevTools extends PluginBase{
         $sender->sendMessage('[DevTools-lakwsh] Adding files...');
         $excludedSubstrings=['/.',realpath($pharPath)];
         $regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',self::preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',self::preg_quote_array($includedPaths,'/')));
-        $count=count($phar->buildFromDirectory($basePath,$regex));
-        $sender->sendMessage("[DevTools] Added $count files");
+		$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FileSystemIterator::CURRENT_AS_PATHNAME);
+		$regexIterator=new \RegexIterator(new \RecursiveIteratorIterator($directory),$regex);
+	    $count=count($phar->buildFromIterator($regexIterator,$basePath));
+	    $sender->sendMessage("[DevTools] Added $count files");
   		$phar->compressFiles(\Phar::GZ);
         $phar->stopBuffering();
         $sender->sendMessage('[DevTools-lakwsh] Done in '.round(microtime(true)-$start,3).'s');
