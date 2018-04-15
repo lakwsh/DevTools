@@ -107,14 +107,12 @@ class DevTools extends PluginBase{
 		$filePath=realpath($file->getValue($plugin));
 		assert(is_string($filePath));
 		$filePath=rtrim($filePath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		if(isset($args[1])){
-			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
-				$path=ltrim(str_replace(["\\",$filePath],['/',''],$file),'/');
-				if(substr($file,-4)!=='.php') continue;
-				if(EncodePHP($file)) $sender->sendMessage('[DevTools-lakwsh] Encoding '.$path);
-			}
+		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
+			if(substr($file,-4)!=='.php') continue;
+			if(isset($args[1]) and EncodePHP($file)) $sender->sendMessage('[DevTools-lakwsh] Encoding '.ltrim(str_replace(["\\",$filePath],['/',''],$file),'/'));
+			else @file_put_contents($file,@php_strip_whitespace($file));
 		}
-        self::buildPhar($sender,$pharPath,$filePath,[],$metadata,$stub);
+		self::buildPhar($sender,$pharPath,$filePath,[],$metadata,$stub);
 		return true;
 	}
 	private function makeServerCommand(CommandSender $sender){
@@ -134,6 +132,10 @@ class DevTools extends PluginBase{
 		];
 		$stub='<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();';
         $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).DIRECTORY_SEPARATOR),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
+			if(substr($file,-4)!=='.php') continue;
+			@file_put_contents($file,@php_strip_whitespace($file));
+		}
         $this->buildPhar($sender,$pharPath,$filePath,['src','vendor'],$metadata,$stub);
         return true;
     }

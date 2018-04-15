@@ -74,8 +74,7 @@
 	foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($basePath)) as $file){
 		if(substr($file,-4)!=='.php') continue;
 		exec('php -l "'.$file.'"',$output,$status);
-		if($status!==0) $flag=true;
-		else file_put_contents($file,php_strip_whitespace($file));
+		if($status!==0 or !@file_put_contents($file,@php_strip_whitespace($file))) $flag=true;
 	}
 	if($flag){
 		foreach($output as $error){
