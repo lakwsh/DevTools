@@ -132,11 +132,7 @@ class DevTools extends PluginBase{
 		];
 		$stub='<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();';
         $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).DIRECTORY_SEPARATOR),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
-			if(substr($file,-4)!=='.php') continue;
-			@file_put_contents($file,@php_strip_whitespace($file));
-		}
-        $this->buildPhar($sender,$pharPath,$filePath,['src','vendor'],$metadata,$stub);
+		$this->buildPhar($sender,$pharPath,$filePath,['src','vendor'],$metadata,$stub);
         return true;
     }
     private function preg_quote_array(array $strings,string $delim=null):array{
