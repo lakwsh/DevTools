@@ -22,7 +22,7 @@ class DevTools extends PluginBase{
 		$this->getLogger()->info('Registered folder plugin loader');
 		$this->getServer()->enablePlugins(PluginLoadOrder::STARTUP);
 	}
-	public function onCommand(CommandSender $sender,Command $command,$label,array $args){
+	public function onCommand(CommandSender $sender,Command $command,$label,array $args):bool{
 		switch($command->getName()){
 			case 'makeplugin':
 				if(!isset($args[0]))return false;
