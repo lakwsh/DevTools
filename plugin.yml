@@ -220,20 +220,6 @@ commands:
  makeserver:
   description: Creates a PocketMine-MP Phar
   usage: "/makeserver"
-  permission: devtools.op
  makeplugin:
   description: Creates a Phar plugin from one in source code form
   usage: "/makeplugin <pluginName>"
-  permission: devtools.op
-
-permissions:
- devtools:
-  default: false
-  description: false
-  children:
-   devtools.op:
-    default: op
-    description: false
-   devtools.all:
-    default: true
-    description: false
