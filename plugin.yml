@@ -1,6 +1,6 @@
 name: DevTools-lakwsh
 main: DevTools\DevTools
-version: 2018-03-21
+version: 2018-04-16
 load: STARTUP
 author: lakwsh
 description: Helps develop and distribute PocketMine-MP plugins
@@ -69,6 +69,26 @@ api:
  - 3.0.0-ALPHA9
  - 3.0.0-alpha10
  - 3.0.0-ALPHA10
+ - 3.0.0-alpha11
+ - 3.0.0-ALPHA11
+ - 3.0.0-alpha12
+ - 3.0.0-ALPHA12
+ - 3.0.0-alpha13
+ - 3.0.0-ALPHA13
+ - 3.0.0-alpha14
+ - 3.0.0-ALPHA14
+ - 3.0.0-alpha15
+ - 3.0.0-ALPHA15
+ - 3.0.0-alpha16
+ - 3.0.0-ALPHA16
+ - 3.0.0-alpha17
+ - 3.0.0-ALPHA17
+ - 3.0.0-alpha18
+ - 3.0.0-ALPHA18
+ - 3.0.0-alpha19
+ - 3.0.0-ALPHA19
+ - 3.0.0-alpha20
+ - 3.0.0-ALPHA20
  - 4.0.0
  - 4.0.0-alpha1
  - 4.0.0-ALPHA1

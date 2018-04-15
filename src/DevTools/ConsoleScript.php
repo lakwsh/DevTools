@@ -1,5 +1,5 @@
 <?php
-	const VERSION='1.12.9';
+	const VERSION='1.12.10';
 	date_default_timezone_set('Asia/Hong_Kong');
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
 	if(!isset($opts['make'])){
@@ -18,7 +18,7 @@
 			echo "[ERROR] make directory `$path` does not exist or permission denied".PHP_EOL;
 			exit(1);
 		}
-		$path=rtrim(str_replace("\\",'/',$realPath),'/').'/';
+		$path=rtrim($realPath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 	});
 	$basePath='';
 	if(!isset($opts['relative'])){
@@ -26,10 +26,10 @@
 			echo 'You must specify a relative path with --relative [path] to be able to include multiple directories'.PHP_EOL;
 			exit(1);
 		}else{
-			$basePath=rtrim(str_replace("\\",'/',realpath(array_shift($includedPaths))),'/').'/';
+			$basePath=rtrim(realpath(array_shift($includedPaths)),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 		}
 	}else{
-		$basePath=rtrim(str_replace("\\",'/',realpath($opts['relative'])),'/').'/';
+		$basePath=rtrim(realpath($opts['relative']),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 	}
 	$includedPaths=array_filter(array_map(function(string $path) use ($basePath):string{return str_replace($basePath,'',$path);},$includedPaths),function(string $v):bool{return $v!=='';});
 	$pharName=$opts['out']??'Output_'.time().'.phar';
@@ -53,10 +53,9 @@
 	}elseif(isset($opts['entry'])){
 		$realEntry=realpath($opts['entry']);
 		if($realEntry===false) exit('Entry point not found');
-		$entry=addslashes(str_replace("\\",'/',$realEntry));
-		$entry=str_replace($basePath,'',$entry);
-		echo "Setting entry point to ".$entry.PHP_EOL;
-		$phar->setStub('<?php require("phar://".__FILE__."/'.$entry.'"); __HALT_COMPILER();');
+		$realEntry=addslashes(str_replace([$basePath, "\\"],['','/'],$realEntry));
+		echo 'Setting entry point to '.$realEntry.PHP_EOL;
+		$phar->setStub('<?php require("phar://".__FILE__."/'.$realEntry.'"); __HALT_COMPILER();');
 	}else{
 		if(file_exists($basePath.'plugin.yml')){
 			$metadata=yaml_parse_file($basePath.'plugin.yml');
@@ -86,7 +85,7 @@
 		exit(1);
 	}
 	echo 'Adding files...'.PHP_EOL;
-	$excludedSubstrings=['/.',$pharName];
+	$excludedSubstrings=[DIRECTORY_SEPARATOR.'.',$pharName];
 	$regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
 	$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::CURRENT_AS_PATHNAME);
 	$regexIterator=new \RegexIterator(new \RecursiveIteratorIterator($directory),$regex);

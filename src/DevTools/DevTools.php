@@ -99,7 +99,9 @@ class DevTools extends PluginBase{
 		$reflection=new \ReflectionClass("pocketmine\\plugin\\PluginBase");
 		$file=$reflection->getProperty('file');
 		$file->setAccessible(true);
-		$filePath=rtrim(str_replace("\\",'/',$file->getValue($plugin)),'/').'/';
+		$filePath=realpath($file->getValue($plugin));
+		assert(is_string($filePath));
+		$filePath=rtrim($filePath,DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
 		if(isset($args[1])){
 			foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
 				$path=ltrim(str_replace(["\\",$filePath],['/',''],$file),'/');
@@ -126,7 +128,7 @@ class DevTools extends PluginBase{
 			'protocol'=>\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL
 		];
 		$stub='<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();';
-        $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).'/'),'/').'/';
+        $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).DIRECTORY_SEPARATOR),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
         $this->buildPhar($sender,$pharPath,$filePath,['src','vendor'],$metadata,$stub);
         return true;
     }
@@ -136,7 +138,11 @@ class DevTools extends PluginBase{
     private function buildPhar(CommandSender $sender,string $pharPath,string $basePath,array $includedPaths,array $metadata,string $stub,int $signatureAlgo=\Phar::SHA1){
         if(file_exists($pharPath)){
             $sender->sendMessage('Phar file already exists, overwriting...');
-            \Phar::unlinkArchive($pharPath);
+	        try{
+	        	\Phar::unlinkArchive($pharPath);
+	        }catch(\PharException $e){
+		        unlink($pharPath);
+	        }
         }
         $start=microtime(true);
         $phar=new \Phar($pharPath);
@@ -145,9 +151,9 @@ class DevTools extends PluginBase{
         $phar->setSignatureAlgorithm($signatureAlgo);
         $phar->startBuffering();
         $sender->sendMessage('[DevTools-lakwsh] Adding files...');
-        $excludedSubstrings=['/.',realpath($pharPath)];
+        $excludedSubstrings=[DIRECTORY_SEPARATOR.'.',realpath($pharPath)];
         $regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',self::preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',self::preg_quote_array($includedPaths,'/')));
-		$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FileSystemIterator::CURRENT_AS_PATHNAME);
+		$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::CURRENT_AS_PATHNAME);
 		$regexIterator=new \RegexIterator(new \RecursiveIteratorIterator($directory),$regex);
 	    $count=count($phar->buildFromIterator($regexIterator,$basePath));
 	    $sender->sendMessage("[DevTools] Added $count files");

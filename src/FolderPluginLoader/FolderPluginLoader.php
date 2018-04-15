@@ -72,6 +72,9 @@ use pocketmine\utils\TextFormat;
 		public function getPluginFilters(){
 			return "/[^\\.]/";
 		}
+		public function canLoadPlugin(string $path):bool{
+			return is_dir($path);
+		}
 		/**
 		 * @param PluginBase        $plugin
 		 * @param PluginDescription $description
