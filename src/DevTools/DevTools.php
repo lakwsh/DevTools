@@ -25,7 +25,7 @@ class DevTools extends PluginBase{
 	// public function onCommand(CommandSender $sender,Command $command,$label,array $args){
 	public function onCommand(CommandSender $sender,Command $command,string $label,array $args):bool{
 		switch($command->getName()){
-			case 'makeplugin':
+			case 'mplugin':
 				if(!isset($args[0]))return false;
 				if($args[0]=='FolderPluginLoader'){
 					return $this->makePluginLoader($sender);
@@ -48,7 +48,7 @@ class DevTools extends PluginBase{
 				}else{
 					return $this->makePluginCommand($sender,$args);
 				}
-			case 'makeserver':
+			case 'mserver':
 				return $this->makeServerCommand($sender);
 			default:
 				return false;

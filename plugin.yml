@@ -1,6 +1,6 @@
 name: DevTools-lakwsh
 main: DevTools\DevTools
-version: 2018-04-16
+version: 2018-05-19
 load: STARTUP
 author: lakwsh
 description: Helps develop and distribute PocketMine-MP plugins
@@ -217,9 +217,9 @@ api:
  - 9.0.0-ALPHA10
 
 commands:
- makeserver:
+ mserver:
   description: Creates a PocketMine-MP Phar
-  usage: "/makeserver"
- makeplugin:
+  usage: "/mserver"
+ mplugin:
   description: Creates a Phar plugin from one in source code form
-  usage: "/makeplugin <pluginName>"
+  usage: "/mplugin <pluginName>"
