@@ -121,7 +121,7 @@ class DevTools extends PluginBase{
             return true;
         }
 	    $server=$sender->getServer();
-		$pharPath=$this->getDataFolder(). DIRECTORY_SEPARATOR .$server->getName().'_'.$server->getPocketMineVersion().'.phar';
+		$pharPath=$this->getDataFolder().DIRECTORY_SEPARATOR.$server->getName().'_'.$server->getPocketMineVersion().'.phar';
 		$metadata=[
 			'name'=>$server->getName(),
 			'version'=>$server->getPocketMineVersion(),
@@ -131,7 +131,7 @@ class DevTools extends PluginBase{
 			'protocol'=>\pocketmine\network\mcpe\protocol\ProtocolInfo::CURRENT_PROTOCOL
 		];
 		$stub='<?php require_once("phar://". __FILE__ ."/src/pocketmine/PocketMine.php"); __HALT_COMPILER();';
-        $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).DIRECTORY_SEPARATOR),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        $filePath=rtrim(str_replace("\\",'/',realpath(\pocketmine\PATH).DIRECTORY_SEPARATOR),DIRECTORY_SEPARATOR);
 		$this->buildPhar($sender,$pharPath,$filePath,['src','vendor'],$metadata,$stub);
         return true;
     }
