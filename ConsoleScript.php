@@ -1,10 +1,11 @@
 <?php
-	const VERSION='1.12.10';
+	const VERSION='1.0.0';
 	date_default_timezone_set('Asia/Hong_Kong');
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
+	global $argv;
 	if(!isset($opts['make'])){
 		echo '== PocketMine-MP DevTools-lakwsh CLI interface =='.PHP_EOL.PHP_EOL;
-		echo 'Usage: '.PHP_BINARY.' -dphar.readonly=0 '.$argv[0].' --make [sourceFolder1{,sourceFolder2{,sourceFolder3...}}] --relative [relativePath] --entry "relativeSourcePath.php" --out [pharName.phar]'.PHP_EOL;
+		echo 'Usage: '.PHP_BINARY.' -dphar.readonly=0 '.$argv[0].' --make <sourceFolder1[,sourceFolder2[,sourceFolder3...]]> --relative <relativePath> --entry "relativeSourcePath.php" --out <pharName.phar>'.PHP_EOL;
 		exit(0);
 	}
 	if(ini_get('phar.readonly')==1){
@@ -25,12 +26,8 @@
 		if(count($includedPaths)>1){
 			echo 'You must specify a relative path with --relative [path] to be able to include multiple directories'.PHP_EOL;
 			exit(1);
-		}else{
-			$basePath=rtrim(realpath(array_shift($includedPaths)),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-		}
-	}else{
-		$basePath=rtrim(realpath($opts['relative']),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
-	}
+		}else{$basePath=rtrim(realpath(array_shift($includedPaths)),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;}
+	}else{$basePath=rtrim(realpath($opts['relative']),DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;}
 	$includedPaths=array_filter(array_map(function(string $path) use ($basePath):string{return str_replace($basePath,'',$path);},$includedPaths),function(string $v):bool{return $v!=='';});
 	$pharName=$opts['out']??'Output_'.time().'.phar';
 	$stubPath=$opts['stub']??'stub.php';
@@ -41,21 +38,21 @@
 	echo PHP_EOL;
 	if(file_exists($pharName)){
 		echo $pharName.' already exists, overwriting...'.PHP_EOL;
-		@unlink($pharName);
+		try{\Phar::unlinkArchive($pharName);}
+		catch(\PharException $e){@unlink($pharName);}
 	}
 	echo 'Creating '.$pharName.'...'.PHP_EOL;
-	if(file_exists($unlink=$basePath.'ConsoleScript.php')) @unlink($unlink);
-	$phar=new \Phar($pharName);
 	$start=microtime(true);
+	$phar=new \Phar($pharName);
 	if(file_exists($basePath.$stubPath)){
 		echo 'Using stub '.$basePath.$stubPath.PHP_EOL;
-		$phar->setStub('<?php require("phar://".__FILE__."/'.$stubPath.'"); __HALT_COMPILER();');
+		$phar->setStub('<?php require("phar://".__FILE__."/'.$stubPath.'");__HALT_COMPILER();');
 	}elseif(isset($opts['entry'])){
 		$realEntry=realpath($opts['entry']);
 		if($realEntry===false) exit('Entry point not found');
 		$realEntry=addslashes(str_replace([$basePath, "\\"],['','/'],$realEntry));
 		echo 'Setting entry point to '.$realEntry.PHP_EOL;
-		$phar->setStub('<?php require("phar://".__FILE__."/'.$realEntry.'"); __HALT_COMPILER();');
+		$phar->setStub('<?php require("phar://".__FILE__."/'.$realEntry.'");__HALT_COMPILER();');
 	}else{
 		if(file_exists($basePath.'plugin.yml')){
 			$metadata=yaml_parse_file($basePath.'plugin.yml');
@@ -64,7 +61,7 @@
 			exit(1);
 		}
 		$phar->setMetadata(['name'=>$metadata['name'],'version'=>$metadata['version'],'main'=>$metadata['main'],'api'=>$metadata['api'],'depend'=>($metadata['depend']??''),'description'=>($metadata['description']??''),'authors'=>($metadata['authors']??''),'website'=>($metadata['website']??''),'creationDate'=>time()]);
-		$phar->setStub('<?php echo "PocketMine-MP plugin '.$metadata['name'].' v'.$metadata['version'].'\nThis file has been generated using DevTools-lakwsh v'.VERSION.' at '.date('r').'\n----------------\n";if(extension_loaded("phar")){$phar=new \Phar(__FILE__);foreach($phar->getMetadata() as $key=>$value){echo ucfirst($key).": ".(is_array($value)?implode(",",$value):$value)."\n";}} __HALT_COMPILER();');
+		$phar->setStub('<?php __HALT_COMPILER();');
 	}
 	$phar->setSignatureAlgorithm(\Phar::SHA1);
 	$phar->startBuffering();
@@ -84,7 +81,7 @@
 		exit(1);
 	}
 	echo 'Adding files...'.PHP_EOL;
-	$excludedSubstrings=[DIRECTORY_SEPARATOR.'.',$pharName];
+	$excludedSubstrings=[DIRECTORY_SEPARATOR.'.',realpath($pharName)];
 	$regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excludedSubstrings,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
 	$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::CURRENT_AS_PATHNAME);
 	$regexIterator=new \RegexIterator(new \RecursiveIteratorIterator($directory),$regex);
