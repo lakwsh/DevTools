@@ -12,6 +12,7 @@ before_deploy:
   - git tag "$(date +'%Y%m%d%H%M%S')"
 deploy:
   provider: releases
+  api_key: $token
   skip_cleanup: true
   file_glob: true
   file: "*.phar"
