@@ -1,5 +1,5 @@
 <?php
-	const VERSION='1.0.0';
+	const VERSION='1.0.1';
 	date_default_timezone_set('Asia/Hong_Kong');
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
 	global $argv;
@@ -38,8 +38,7 @@
 	echo PHP_EOL;
 	if(file_exists($pharName)){
 		echo $pharName.' already exists, overwriting...'.PHP_EOL;
-		try{\Phar::unlinkArchive($pharName);}
-		catch(\PharException $e){@unlink($pharName);}
+		@unlink($pharName);
 	}
 	echo 'Creating '.$pharName.'...'.PHP_EOL;
 	$start=microtime(true);
@@ -54,13 +53,10 @@
 		echo 'Setting entry point to '.$realEntry.PHP_EOL;
 		$phar->setStub('<?php require("phar://".__FILE__."/'.$realEntry.'");__HALT_COMPILER();');
 	}else{
-		if(file_exists($basePath.'plugin.yml')){
-			$metadata=yaml_parse_file($basePath.'plugin.yml');
-		}else{
+		if(!file_exists($basePath.'plugin.yml')){
 			echo "Missing entry point or plugin.yml\n";
 			exit(1);
 		}
-		$phar->setMetadata(['name'=>$metadata['name'],'version'=>$metadata['version'],'main'=>$metadata['main'],'api'=>$metadata['api'],'depend'=>($metadata['depend']??''),'description'=>($metadata['description']??''),'authors'=>($metadata['authors']??''),'website'=>($metadata['website']??''),'creationDate'=>time()]);
 		$phar->setStub('<?php __HALT_COMPILER();');
 	}
 	$phar->setSignatureAlgorithm(\Phar::SHA1);

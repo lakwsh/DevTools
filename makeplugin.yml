@@ -1,0 +1,18 @@
+sudo: false
+language: php
+php:
+  - 7.0
+script:
+  - echo | pecl install channel://pecl.php.net/yaml-2.0.2
+  - wget https://raw.githubusercontent.com/lakwsh/DevTools-lakwsh/master/ConsoleScript.php
+  - php -dphar.readonly=0 ./ConsoleScript.php --make ./
+before_install:
+  - export TZ='Asia/Shanghai'
+before_deploy:
+  - git tag "$(date +'%Y%m%d%H%M%S')"
+deploy:
+  provider: releases
+  api_key: $token
+  skip_cleanup: true
+  file_glob: true
+  file: "*.phar"
