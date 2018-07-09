@@ -106,7 +106,7 @@
 		$phar->setSignatureAlgorithm($signature);
 		$phar->startBuffering();
 		$excluded=[DIRECTORY_SEPARATOR.'.',realpath($pharPath),'ConsoleScript.php'];
-		if(is_array($excludedFiles)) array_push($excluded,$excludedFiles);
+		if(is_array($excludedFiles)) $excluded=array_merge($excluded,$excludedFiles);
 		$regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',
 			implode('|',preg_quote_array($excluded,'/')),
 			preg_quote($basePath,'/'),
