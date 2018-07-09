@@ -1,7 +1,7 @@
 <?php
-	const VERSION='1.0.3';
+	const VERSION='1.0.4';
 	date_default_timezone_set('Asia/Hong_Kong');
-	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
+	$opts=getopt('',['make:','exclude:','relative:','out:','entry:','stub:']);
 	global $argv;
 	if(!isset($opts['make'])){
 		echo '== PocketMine-MP DevTools-lakwsh CLI interface =='.PHP_EOL.PHP_EOL;
