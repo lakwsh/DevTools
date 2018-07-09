@@ -1,11 +1,11 @@
 <?php
-	const VERSION='1.0.2';
+	const VERSION='1.0.3';
 	date_default_timezone_set('Asia/Hong_Kong');
 	$opts=getopt('',['make:','relative:','out:','entry:','stub:']);
 	global $argv;
 	if(!isset($opts['make'])){
 		echo '== PocketMine-MP DevTools-lakwsh CLI interface =='.PHP_EOL.PHP_EOL;
-		echo 'Usage: '.PHP_BINARY.' -dphar.readonly=0 '.$argv[0].' --make <sourceFolder1[,sourceFolder2[,sourceFolder3...]]> --relative <relativePath> --entry "relativeSourcePath.php" --out <pharName.phar>'.PHP_EOL;
+		echo 'Usage: '.PHP_BINARY.' -dphar.readonly=0 '.$argv[0].' --make <src1[,src2[,src3...]]> --exclude <1.php[,2.php[,3.php...]]> --relative <relativePath> --entry "relativePath.php" --out <pharName.phar>'.PHP_EOL;
 		exit(0);
 	}
 	if(ini_get('phar.readonly')==1){
@@ -78,6 +78,7 @@
 	}
 	echo 'Adding files...'.PHP_EOL;
 	$excluded=[DIRECTORY_SEPARATOR.'.',realpath($pharName),'ConsoleScript.php'];
+	if(isset($opts['exclude'])) array_push($excluded,explode(',',$opts['exclude']));
 	$regex=sprintf('/^(?!.*(%s))^%s(%s).*/i',implode('|',preg_quote_array($excluded,'/')),preg_quote($basePath,'/'),implode('|',preg_quote_array($includedPaths,'/')));
 	$directory=new \RecursiveDirectoryIterator($basePath,\FilesystemIterator::SKIP_DOTS|\FilesystemIterator::FOLLOW_SYMLINKS|\FilesystemIterator::CURRENT_AS_PATHNAME);
 	$regexIterator=new \RegexIterator(new \RecursiveIteratorIterator($directory),$regex);
